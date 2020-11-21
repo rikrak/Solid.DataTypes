@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Solid.DataTypes;
@@ -19,7 +20,6 @@ namespace Tests.Unit.DataTypes.FilePathTests
         [DataRow("\\Documents", true, DisplayName = "RelativeFolderName")]
         [DataRow("Documents\\", true, DisplayName = "FolderWithTrailingSlash")]
         [DataRow("My Documents", true, DisplayName = "JustFolderNameWithSpaces")]
-        [DataRow("C:\\Temp\\bad:Filename.txt", false, DisplayName = "RootedPathWithBadFilename")]
         // commented these out as the tests fail after moving to .netstandard from .NET Framework
         // Given that this can now run on non-windows platforms, these paths may actually be valid???!!!
         //[DataRow("\\\\Saturn\\Finance\\C:\\Temp\\badFilename.txt", false, DisplayName = "UncPathWithBadFilename")]
@@ -35,6 +35,23 @@ namespace Tests.Unit.DataTypes.FilePathTests
 
             // assert
             actual.Should().Be(expected);
+        }
+
+        [TestMethod]
+        public void RootedPathWithBadFilename()
+        {
+            // arrange
+            var badFileName = $"bad{System.IO.Path.GetInvalidFileNameChars().First(c => c != System.IO.Path.DirectorySeparatorChar)}Filename.txt";
+            var path = System.IO.Path.GetTempPath();
+            var value = $"{path}{System.IO.Path.DirectorySeparatorChar}{badFileName}";
+
+            var target = new FilePath(value);
+
+            // act
+            var actual = target.IsValid;
+
+            // assert
+            actual.Should().Be(false);
         }
 
         [TestMethod]
