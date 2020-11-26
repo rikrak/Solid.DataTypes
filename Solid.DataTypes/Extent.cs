@@ -1,4 +1,5 @@
 ﻿using System;
+using Solid.DataTypes.Infrastructure;
 
 namespace Solid.DataTypes
 {
@@ -19,6 +20,8 @@ namespace Solid.DataTypes
         /// </summary>
         public Extent(T from, T to, RangeInclusion inclusion)
         {
+            if (from.IsNull()) { throw new ArgumentNullException(nameof(from), "from cannot be null");}
+            if (to.IsNull()) { throw new ArgumentNullException(nameof(to), "to cannot be null");}
             if (from.CompareTo(to) > 0)
             {
                 const string message = "The from must be before the to";
