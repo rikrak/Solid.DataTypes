@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Solid.DataTypes
 {
@@ -48,12 +49,20 @@ namespace Solid.DataTypes
         [System.Diagnostics.Contracts.Pure]
         public Ratio Invert()
         {
+            if (this._denominator == 0m)
+            {
+                return new Ratio(0, 1);
+            }
             return new Ratio(this._denominator, this._numerator);
         }
 
         [System.Diagnostics.Contracts.Pure]
         public decimal ApplyTo(decimal value)
         {
+            if (this._denominator == 0m)
+            {
+                return 0m;
+            }
             return (value * this._numerator) / this._denominator;
         }
 
@@ -108,6 +117,10 @@ namespace Solid.DataTypes
         [System.Diagnostics.Contracts.Pure]
         public static explicit operator decimal(Ratio value)
         {
+            if (value._denominator == 0m)
+            {
+                return 0m;
+            }
             return value._numerator / value._denominator;
         }
 
@@ -130,6 +143,10 @@ namespace Solid.DataTypes
         [System.Diagnostics.Contracts.Pure]
         public override string ToString()
         {
+            if (this._denominator == 0)
+            {
+                return "0.00";
+            }
             if (this._denominator == 1)
             {
                 return this._numerator.ToString("N");

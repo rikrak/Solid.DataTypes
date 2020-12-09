@@ -25,5 +25,19 @@ namespace Tests.Unit.DataTypes.RatioTests
             // assert
             ((decimal)actual).Should().Be((decimal)expected);
         }
+
+        [TestMethod]
+        public void InvertDefault()
+        {
+            // arrange
+            var defaultVal = default(Ratio);
+
+            // act
+            var actual = defaultVal.Invert();
+
+            // assert
+            ((decimal) actual).Should().Be(0m);
+        }
+
     }
 }

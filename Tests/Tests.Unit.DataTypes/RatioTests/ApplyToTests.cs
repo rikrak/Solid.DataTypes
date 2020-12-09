@@ -1,12 +1,57 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Solid.DataTypes;
 
 namespace Tests.Unit.DataTypes.RatioTests
 {
     [TestClass]
+    public class CtorTests
+    {
+        [TestMethod]
+        public void ShouldPreventDivideByZero()
+        {
+            // arrange
+            
+            // act
+            Action act = () => new Ratio(12, 0);
+
+            // assert
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [TestMethod]
+        public void DefaultConstructorShouldEquateToZero()
+        {
+            // arrange
+            
+            // act
+            var actual1 = new Ratio();
+            var actual2 = default(Ratio);
+
+            // assert
+            ((decimal)actual1).Should().Be(0m);
+            ((decimal)actual2).Should().Be(0m);
+        }
+
+    }
+    [TestClass]
     public class ApplyToTests
     {
+        [TestMethod]
+        public void UseDefaultValue()
+        {
+            // arrange
+            var target = new Ratio();
+
+            // act
+            var actual = target.ApplyTo(3);
+
+            // assert
+            actual.Should().Be(0m);
+        }
+
+
         [TestMethod]
         public void ShouldBeReversible()
         {
