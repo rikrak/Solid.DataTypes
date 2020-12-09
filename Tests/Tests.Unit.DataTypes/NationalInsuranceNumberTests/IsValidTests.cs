@@ -68,7 +68,23 @@ namespace Tests.Unit.DataTypes.NationalInsuranceNumberTests
                 // assert
                 actual.Should().Be(shouldBeValid, "{0} is {1}a valid National Insurance Number", candidate, shouldBeValid? "" : "not ");
             }
-
         }
+
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow("\t")]
+        [DataRow("  ")]
+        [TestMethod]
+        public void EmptyValues(string candidate)
+        {
+            // arrange
+            
+            // act
+            var actual = NationalInsuranceNumber.IsValid(candidate);
+
+            // assert
+            actual.Should().BeFalse();
+        }
+
     }
 }

@@ -7,8 +7,10 @@ namespace Solid.DataTypes
     /// <summary>
     /// Represents a UK National Insurance number
     /// </summary>
-    public sealed class NationalInsuranceNumber : IEquatable<NationalInsuranceNumber>, IFormattable
+    public readonly struct NationalInsuranceNumber : IEquatable<NationalInsuranceNumber>, IFormattable
     {
+        public static readonly NationalInsuranceNumber Empty = new NationalInsuranceNumber();
+
         private static readonly string[] InvalidPrefixes;
         private const string NiPattern = @"^(?!BGbg)(?!GBgb)(?!NKnk)(?!KNkn)(?!TNtn)(?!NTnt)(?!ZZzz)(?:[A-CEGHJ-PR-TW-Za-ceghj-pr-tw-z][A-CEGHJ-NPR-TW-Za-ceghj-npr-tw-z])(?:\s*\d\s*){6}([A-Da-d]|\s)$";
         private static readonly Regex ValidationRegex;
@@ -46,19 +48,22 @@ namespace Solid.DataTypes
 
         #region Conversion
 
-        public static explicit operator string(NationalInsuranceNumber value)
+        public static bool TryParse(string candidate, out NationalInsuranceNumber result)
         {
-            return value?.ToString();
+            if (!IsValid(candidate))
+            {
+                result = NationalInsuranceNumber.Empty;
+                return false;
+            }
+            result = new NationalInsuranceNumber(candidate);
+            return true;
         }
 
-        public static explicit operator NationalInsuranceNumber(string value)
+        public static explicit operator string(NationalInsuranceNumber value)
         {
-            if (value == null)
-            {
-                return null;
-            }
-            return new NationalInsuranceNumber(value);
+            return value.ToString();
         }
+
 
         #endregion
 
@@ -66,15 +71,12 @@ namespace Solid.DataTypes
 
         public bool Equals(NationalInsuranceNumber other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
             return string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
             return obj is NationalInsuranceNumber other && Equals(other);
         }
 
@@ -98,7 +100,15 @@ namespace Solid.DataTypes
         #region ToString
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            if (string.IsNullOrWhiteSpace(format)) format = "C";
+            if (string.IsNullOrWhiteSpace(this._value))
+            {
+                return string.Empty;
+            }
+
+            if (string.IsNullOrWhiteSpace(format))
+            {
+                format = "C";
+            }
 
             if (format.Equals("C", StringComparison.InvariantCultureIgnoreCase))
             {

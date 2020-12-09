@@ -23,7 +23,27 @@ namespace Tests.Unit.DataTypes.NationalInsuranceNumberTests
 
             // act
             var actual = item.ToString();
+            
+            // assert
+            actual.Should().Be(expected);
+        }
 
+        [DataRow("AB123456D", "AB123456D")]
+        [DataRow("AB 12 34 56 D", "AB123456D")]
+        [DataRow("ab123456d", "AB123456D")]
+        [DataRow("ab 12 34 56 d", "AB123456D")]
+        [DataRow("ab12 34 56d", "AB123456D")]
+        [DataRow("ab 123456 d", "AB123456D")]
+        [DataRow("a b 1 2 3 4 5 6 d", "AB123456D")]
+        [DataTestMethod]
+        public void ShouldBeUpperCaseNoSpaceWhenNoFormatSpecifier(string value, string expected)
+        {
+            // arrange
+            var item = new NationalInsuranceNumber(value);
+
+            // act
+            var actual = item.ToString(null, null);
+            
             // assert
             actual.Should().Be(expected);
         }
@@ -93,5 +113,18 @@ namespace Tests.Unit.DataTypes.NationalInsuranceNumberTests
             actFormatted.Should().Throw<FormatException>();
             actInterpolated.Should().Throw<FormatException>();
         }
+
+        [TestMethod]
+        public void EmptyValue()
+        {
+            // arrange
+            
+            // act
+            var actual = NationalInsuranceNumber.Empty.ToString();
+
+            // assert
+            actual.Should().BeEmpty();
+        }
+
     }
 }

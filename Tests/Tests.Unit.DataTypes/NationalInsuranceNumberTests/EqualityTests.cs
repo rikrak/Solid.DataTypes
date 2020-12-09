@@ -95,25 +95,16 @@ namespace Tests.Unit.DataTypes.NationalInsuranceNumberTests
         }
 
         [TestMethod]
-        public void RightHandSideIsNull()
+        public void ObjectCompareToNull()
         {
             // arrange
-            var lhs = new NationalInsuranceNumber("AB 12 34 56 D");
-            const NationalInsuranceNumber rhs = null;
+            var lhs = new NationalInsuranceNumber("AB123456C");
 
-            // act & assert
-            RunEqualityTest(lhs, rhs, false);
-        }
+            // act
+            var actual = lhs.Equals(null);
 
-        [TestMethod]
-        public void LeftHandSideIsNull()
-        {
-            // arrange
-            const NationalInsuranceNumber lhs = null;
-            var rhs = new NationalInsuranceNumber("AB 12 34 56 D");
-
-            // act & assert
-            RunEqualityTest(lhs, rhs, false);
+            // assert
+            actual.Should().BeFalse();
         }
 
         private void RunEqualityTest(NationalInsuranceNumber lhs, NationalInsuranceNumber rhs, bool areExpectedToBeEqual)
@@ -124,10 +115,10 @@ namespace Tests.Unit.DataTypes.NationalInsuranceNumberTests
             var actualFromOperator = lhs == rhs;
             var actualFromOperatorReversed = rhs == lhs;
             var actualFromInverseOperator = lhs != rhs;
-            var actualFromMethod = lhs != null ? lhs.Equals(rhs) : areExpectedToBeEqual;
-            var actualFromMethodReversed = rhs != null ? rhs.Equals(lhs) : areExpectedToBeEqual;
-            var actualFromObjectMethod = lhs != null ? lhs.Equals((object)rhs) : areExpectedToBeEqual;
-            var actualFromObjectMethodReversed = rhs != null ? rhs.Equals((object)lhs) : areExpectedToBeEqual;
+            var actualFromMethod = lhs.Equals(rhs);
+            var actualFromMethodReversed = rhs.Equals(lhs);
+            var actualFromObjectMethod = lhs.Equals((object)rhs);
+            var actualFromObjectMethodReversed = rhs.Equals((object)lhs);
 
             // assert
             actualFromInverseOperator.Should().Be(!areExpectedToBeEqual, "The instances are {0}equal", areExpectedToBeEqual ? "" : "not ");
@@ -138,17 +129,12 @@ namespace Tests.Unit.DataTypes.NationalInsuranceNumberTests
             actualFromObjectMethod.Should().Be(areExpectedToBeEqual, "The instances are {0}equal", areExpectedToBeEqual ? "" : "not ");
             actualFromObjectMethodReversed.Should().Be(areExpectedToBeEqual, "The instances are {0}equal", areExpectedToBeEqual ? "" : "not ");
 
-            if ((lhs != null) && (rhs != null))
-            {
-                var actualFromGetHashCode = lhs.GetHashCode() == rhs.GetHashCode();
+            var actualFromGetHashCode = lhs.GetHashCode() == rhs.GetHashCode();
 
-                if (areExpectedToBeEqual)
-                {
-                    actualFromGetHashCode.Should().BeTrue("the hashcodes should be the same on equivalent objects");
-                }
+            if (areExpectedToBeEqual)
+            {
+                actualFromGetHashCode.Should().BeTrue("the hashcodes should be the same on equivalent objects");
             }
         }
-
-
     }
 }
